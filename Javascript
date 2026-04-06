@@ -1,0 +1,4 @@
+const data = {
+  1: "profit",
+  2: "loss",
+}
