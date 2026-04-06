@@ -2,52 +2,132 @@
 <html>
 <head>
   <title>Trading Calendar XAUUSD</title>
+
   <style>
-    body { font-family: Arial; text-align: center; }
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #0f0f0f;
+      color: white;
+    }
+
+    h2 {
+      margin-top: 20px;
+    }
+
     .calendar {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
+      gap: 12px;
       max-width: 500px;
-      margin: auto;
+      margin: 20px auto;
     }
+
     .day {
-      padding: 20px;
-      border-radius: 10px;
-      color: white;
+      padding: 15px;
+      border-radius: 12px;
       font-weight: bold;
+      cursor: pointer;
+      min-height: 60px;
+      transition: 0.2s;
     }
-    .profit { background: green; }
-    .loss { background: red; }
-    .neutral { background: gray; }
+
+    .day:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 20px white;
+    }
+
+    /* 🟢 PROFIT */
+    .profit {
+      background: #00ff88;
+      color: black;
+      box-shadow:
+        0 0 10px #00ff88,
+        0 0 20px #00ff88,
+        0 0 40px #00ff88;
+    }
+
+    /* 🔴 LOSS */
+    .loss {
+      background: #ff3b3b;
+      box-shadow:
+        0 0 10px #ff3b3b,
+        0 0 20px #ff3b3b,
+        0 0 40px #ff3b3b;
+    }
+
+    /* ⚪ NETRAL */
+    .neutral {
+      background: #333;
+      box-shadow: 0 0 5px #555;
+    }
+
+    .value {
+      display: block;
+      font-size: 12px;
+      margin-top: 5px;
+    }
   </style>
 </head>
+
 <body>
 
 <h2>📊 Trading Calendar - XAUUSD</h2>
+<h3 id="total">Total: 0</h3>
 
 <div class="calendar" id="calendar"></div>
 
 <script>
-const data = {
-  1: "profit",
-  2: "loss",
-  3: "neutral",
-  4: "profit",
-  5: "loss",
-};
+let data = JSON.parse(localStorage.getItem("tradingData")) || {};
 
 const calendar = document.getElementById("calendar");
+const totalText = document.getElementById("total");
+
+function saveData() {
+  localStorage.setItem("tradingData", JSON.stringify(data));
+}
+
+function updateTotal() {
+  let total = 0;
+  for (let key in data) {
+    total += Number(data[key]);
+  }
+  totalText.innerText = "Total: " + total;
+}
 
 for (let i = 1; i <= 30; i++) {
   let div = document.createElement("div");
-  let status = data[i] || "neutral";
+
+  let value = data[i] || 0;
+  let status = "neutral";
+
+  if (value > 0) status = "profit";
+  else if (value < 0) status = "loss";
 
   div.className = "day " + status;
-  div.innerText = i;
+  div.innerHTML = i + "<span class='value'>" + (value != 0 ? value : "") + "</span>";
+
+  div.onclick = () => {
+    let input = prompt("Masukkan profit/loss (contoh: 20 atau -15):");
+
+    if (input === null) return;
+
+    let number = Number(input);
+
+    if (!isNaN(number) && input !== "") {
+      data[i] = number;
+    } else {
+      delete data[i];
+    }
+
+    saveData();
+    location.reload();
+  };
 
   calendar.appendChild(div);
 }
+
+updateTotal();
 </script>
 
 </body>
