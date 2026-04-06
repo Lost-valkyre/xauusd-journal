@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trading Calendar XAUUSD</title>
+  <style>
+    body { font-family: Arial; text-align: center; }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      max-width: 500px;
+      margin: auto;
+    }
+    .day {
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+    }
+    .profit { background: green; }
+    .loss { background: red; }
+    .neutral { background: gray; }
+  </style>
+</head>
+<body>
+
+<h2>📊 Trading Calendar - XAUUSD</h2>
+
+<div class="calendar" id="calendar"></div>
+
+<script>
+const data = {
+  1: "profit",
+  2: "loss",
+  3: "neutral",
+  4: "profit",
+  5: "loss",
+};
+
+const calendar = document.getElementById("calendar");
+
+for (let i = 1; i <= 30; i++) {
+  let div = document.createElement("div");
+  let status = data[i] || "neutral";
+
+  div.className = "day " + status;
+  div.innerText = i;
+
+  calendar.appendChild(div);
+}
+</script>
+
+</body>
+</html>
